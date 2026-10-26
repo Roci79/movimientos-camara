@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Atlas de movimientos de cámara</title>
+<style>
+:root{color-scheme:dark;--bg:#2c3e50;--panel:#243546;--line:#647483;--text:#f0f0f0;--muted:#d4d8dc;--blue:#f0f0f0;--gold:#c19a53}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 system-ui,sans-serif}main,header,footer{width:min(1160px,92%);margin:auto}header{padding:60px 0 20px}h1{font-size:clamp(2.3rem,6vw,4.3rem);line-height:1.12;letter-spacing:-.04em;margin:18px 0}header p{max-width:850px;color:var(--muted)}.eyebrow{color:#dec28f;text-transform:uppercase;letter-spacing:.15em;font-size:.78rem}nav,.legend{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0}nav a{color:var(--text);text-decoration:none;border:1px solid var(--line);padding:7px 13px;border-radius:30px;font-size:.88rem}.legend span{font-size:.86rem}.legend span:nth-child(1){color:var(--blue)}.legend span:nth-child(2){color:var(--gold)}.legend span:nth-child(3){color:#bcc5ce}section{padding:24px 0;scroll-margin-top:20px}h2{margin:0;font-size:1.85rem}.intro{color:var(--muted);margin-top:6px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.card{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--panel)}.head,.body{padding:22px}.head h3{margin:6px 0 0;font-size:1.35rem}.english{color:var(--muted);margin:3px 0 13px}.badge{display:inline-block;font-size:.73rem;border:1px solid #788592;border-radius:6px;padding:3px 8px;margin:0 5px 4px 0}.stage{background:#1d2b39;border-block:1px solid var(--line)}svg{display:block;width:100%;height:auto}svg text{font:11px system-ui,sans-serif;fill:#e0e3e6}svg .camera-label{fill:var(--blue);font-weight:700}svg .subject-label{fill:var(--gold);font-weight:700}.route{fill:none;stroke:var(--blue);stroke-width:1.8;stroke-dasharray:5 6;opacity:.55}.reference{stroke:#9aa6b0;fill:#34495d;stroke-width:1.3}.controls{padding:16px 22px 0}.row{display:flex;align-items:center;gap:12px}button,input{font:inherit}button{cursor:pointer}.play{border:0;border-radius:8px;background:var(--blue);color:#2c3e50;padding:9px 13px;font-weight:750;min-width:135px}.status{font-size:.8rem;color:var(--muted)}.scrub{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:.76rem;color:var(--muted)}input[type=range]{width:100%;accent-color:var(--blue)}output{min-width:34px}.body{padding-top:6px}.body p{font-size:.94rem;color:var(--muted)}strong{color:var(--text)}.observe{border-left:2px solid var(--blue);padding-left:12px}.prompt{background:#1d2b39;border:1px solid #647483;border-radius:10px;padding:14px;margin-top:18px}.prompt-label{color:#dec28f;font-size:.76rem}.prompt code{display:block;font: .87rem/1.65 ui-monospace,monospace;margin:9px 0 13px;overflow-wrap:anywhere}.copy{border:1px solid #9aa6b0;background:transparent;color:var(--text);padding:6px 10px;border-radius:7px;font-size:.8rem}button:hover,nav a:hover{filter:brightness(1.15)}:focus-visible{outline:3px solid var(--blue);outline-offset:4px}.comparison{background:linear-gradient(125deg,#34495d,#243546);border:1px solid #788592;border-radius:18px;padding:26px}.comparison p{color:var(--muted)}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:13px 10px;border-bottom:1px solid #647483;vertical-align:top}th{color:#dec28f}td{color:#e0e3e6}footer{padding:20px 0 45px;color:var(--muted);font-size:.85rem}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}@media(max-width:740px){.grid{grid-template-columns:1fr}header{padding-top:35px}.head,.body,.comparison{padding-inline:18px}.controls{padding-inline:18px}th,td{font-size:.86rem}}
+
+.view-title{margin:0;padding:11px 18px;background:#243546;color:#f0f0f0;font-size:.85rem;font-weight:650;border-bottom:1px solid #647483}
+.camera-result{border-bottom:1px solid #647483;background:#1d2b39}
+.camera-result canvas{display:block;width:100%;height:auto;aspect-ratio:16/9}
+.view-note{margin:0;padding:10px 18px;color:#d4d8dc;font-size:.78rem;min-height:62px}
+</style>
+</head>
+<body>
+<header><div class="eyebrow">Biblioteca visual · Vídeo con IA</div><h1>Dirige la cámara.<br>Cuenta mejor tu historia.</h1><p>Ocho movimientos para entender qué hace la cámara y cómo pedirlo en un prompt. Reproduce cada demostración o arrastra el control para examinar el recorrido paso a paso.</p><div class="legend"><span>● Cámara y dirección de mirada</span><span>● Sujeto</span><span>● Entorno fijo</span></div><p>Los esquemas muestran la escena desde fuera, no la imagen grabada. El cono azul indica hacia dónde mira la cámara y la línea discontinua señala su trayectoria. Las distancias son ilustrativas.</p><nav aria-label="Categorías"><a href="#entorno">Mostrar el entorno</a><a href="#detalles">Destacar detalles</a><a href="#acompanar">Acompañar al sujeto</a><a href="#dinamismo">Crear dinamismo</a><a href="#zoom">Movimiento y zoom</a></nav></header>
+<main id="library"></main>
+<footer>Un movimiento principal por plano facilita una instrucción clara. Añade dirección, velocidad y sujeto. Funciona sin conexión y las demostraciones solo se animan al pulsar reproducir.</footer><div id="announcement" class="sr-only" role="status" aria-live="polite"></div>
+<script>
+'use strict';
+const groups=[['entorno','01 · Mostrar el entorno','Explora el espacio girando la cámara desde un punto fijo.'],['detalles','02 · Destacar detalles','Desplaza la cámara para dar protagonismo a un objeto.'],['acompanar','03 · Acompañar al sujeto','La cámara y el sujeto avanzan; las referencias del entorno permanecen quietas.'],['dinamismo','04 · Crear dinamismo','Recorre un arco o cambia de altura para transformar el punto de vista.']];
+const movements=[
+{id:'pan',group:'entorno',name:'Panorámica horizontal',english:'Pan',view:'Vista superior',type:'Giro · posición fija',explanation:'La cámara gira a izquierda o derecha sin desplazarse.',use:'Para recorrer un paisaje, mostrar una habitación o revelar lo que hay junto al sujeto.',key:'El centro de la cámara permanece sobre el mismo punto. Solo cambia su dirección.',prompt:'Slow pan from left to right, revealing the coastal village and the surrounding cliffs. Camera rotates from a fixed position, no lateral travel.'},
+{id:'tilt',group:'entorno',name:'Panorámica vertical',english:'Tilt',view:'Vista lateral',type:'Giro · posición fija',explanation:'La cámara inclina su mirada hacia arriba o hacia abajo desde un punto fijo.',use:'Para mostrar la altura de un edificio, recorrer una figura o descubrir algo sobre ella.',key:'La cámara no sube: gira sobre su soporte para mirar más arriba.',prompt:'Slow tilt up from the entrance of the cathedral to the top of its towers. Fixed camera position, no upward camera travel.'},
+{id:'dolly',group:'detalles',name:'Acercamiento físico',english:'Dolly in / Push-in',view:'Vista superior',type:'Desplazamiento · hacia el sujeto',explanation:'La cámara avanza físicamente hacia el sujeto, cambiando la perspectiva.',use:'Para destacar un producto, descubrir un detalle o intensificar una emoción.',key:'La distancia entre cámara y sujeto disminuye. El sujeto permanece quieto.',prompt:'Slow dolly in toward the handmade necklace, ending on a close-up of its intricate details. Physical camera movement toward the subject, no zoom.'},
+{id:'slide',group:'detalles',name:'Deslizamiento lateral',english:'Camera slide / Slider shot',view:'Vista superior',type:'Desplazamiento · lateral',explanation:'La cámara recorre una distancia corta hacia un lado. En este esquema mantiene su orientación para aislar el desplazamiento.',use:'Para mostrar volumen, texturas y acabados en productos, comida o decoración.',key:'La cámara se desplaza por un raíl. El objeto y el fondo no se mueven.',prompt:'Slow lateral camera slide from left to right past the ceramic vase, revealing its textured surface. Maintain a constant camera orientation, no pan, no zoom.'},
+{id:'tracking',group:'acompanar',name:'Seguimiento lateral',english:'Parallel tracking shot',view:'Vista superior',type:'Cámara y sujeto · en paralelo',explanation:'La cámara avanza al lado del sujeto, en la misma dirección y a su misma velocidad.',use:'Para acompañar a alguien que camina, corre o va en bicicleta, manteniéndolo de perfil.',key:'Ambos avanzan en paralelo. La distancia entre ellos se mantiene.',prompt:'Side tracking shot moving alongside a woman walking through the market, matching her pace and keeping her in profile.'},
+{id:'follow',group:'acompanar',name:'Seguimiento desde atrás',english:'Follow shot',view:'Vista superior',type:'Cámara y sujeto · misma ruta',explanation:'La cámara avanza detrás del sujeto mientras este se desplaza.',use:'Para entrar con el personaje en un lugar o crear una sensación de exploración.',key:'El sujeto va delante. La cámara lo sigue manteniendo la separación.',prompt:'Smooth follow shot from behind a man entering a forest, maintaining a constant distance as he walks.'},
+{id:'orbit',group:'dinamismo',name:'Movimiento orbital',english:'Orbit shot',view:'Vista superior',type:'Desplazamiento · arco de 180°',explanation:'La cámara recorre un arco alrededor del sujeto y gira para seguir apuntándole.',use:'Para presentar un personaje o producto desde varios ángulos o dar energía a una escena.',key:'La cámara cambia de posición y orientación. El sujeto permanece en el centro.',prompt:'The camera slowly orbits 180 degrees around the dancer, keeping her centered in the frame and maintaining a constant distance.'},
+{id:'crane',group:'dinamismo',name:'Movimiento de grúa',english:'Crane shot / Jib shot',view:'Vista lateral',type:'Desplazamiento · elevación en arco',explanation:'La cámara se eleva por el espacio. Aquí sigue el arco del brazo de una grúa.',use:'Para pasar de un personaje a una vista amplia, revelar un espacio o cerrar un vídeo.',key:'El cuerpo de la cámara gana altura. Su mirada se ajusta hacia el sujeto.',prompt:'The camera rises smoothly in a crane arc above the couple, gradually revealing the rooftop party and the city skyline. Physical upward camera movement, no zoom.'}
+];
+const library=document.getElementById('library');let active=null;const duration=6500;
+function tree(x,y){return `<g transform="translate(${x} ${y})"><circle class="reference" r="13"/><path d="M-6 0H6M0-6V6" stroke="#9aa6b0"/></g>`}
+function subject(x,y,label='SUJETO'){return `<g class="subject" transform="translate(${x} ${y})"><circle r="18" fill="#c19a53" fill-opacity=".12"/><circle cy="-7" r="6" fill="#c19a53"/><path d="M-10 10Q-10-1 0-1Q10-1 10 10Z" fill="#c19a53"/><text class="subject-label" y="34" text-anchor="middle">${label}</text></g>`}
+function environment(id){
+if(id==='tilt')return `<path d="M20 218H380" stroke="#9aa6b0"/><path class="reference" d="M265 216V69L288 36L311 69V216ZM311 216V95H350V216Z"/><path d="M280 216V184Q288 169 296 184V216" fill="#1d2b39" stroke="#a8b1ba"/><path d="M281 85H295M281 112H295M281 139H295" stroke="#a8b1ba"/><text x="288" y="27" text-anchor="middle">TORRE FIJA</text><circle cx="288" cy="202" r="4" fill="#c19a53"/><circle cx="288" cy="55" r="4" fill="#c19a53"/><text x="300" y="243" text-anchor="middle">Suelo de referencia</text><path d="M65 199V218M48 218L65 199L82 218" stroke="#a8b1ba" fill="none"/>`;
+if(id==='crane')return `<path d="M20 219H380" stroke="#9aa6b0"/><path class="reference" d="M315 218V96H340V218M344 218V65H366V218"/><text x="330" y="48" text-anchor="middle">EDIFICIOS FIJOS</text><line class="arm" x1="170" y1="215" x2="60" y2="215" stroke="#a8b1ba" stroke-width="4"/><path class="route" d="M60 215A110 110 0 0 1 170 105"/><circle cx="170" cy="215" r="5" fill="#bcc5ce"/><path d="M154 230L170 215L186 230" fill="none" stroke="#bcc5ce"/>${subject(270,192)}<text x="140" y="248" text-anchor="middle">Pivote de grúa</text>`;
+let s=`<path d="M25 52H375M25 224H375" stroke="#647483" stroke-dasharray="3 5"/>${tree(45,58)}${tree(345,62)}${tree(340,219)}<rect class="reference" x="161" y="27" width="53" height="25" rx="4"/><text x="188" y="20" text-anchor="middle">ENTORNO FIJO</text>`;
+if(id==='pan')s+=`${subject(285,140)}${tree(245,65)}${tree(245,215)}<circle cx="75" cy="140" r="7" fill="none" stroke="#dec28f" stroke-width="2"/><text x="75" y="225" text-anchor="middle">Punto fijo</text>`;
+if(id==='dolly')s+=`${subject(292,140,'OBJETO')}<path class="route" d="M55 140H202"/><text x="133" y="198" text-anchor="middle">Acercamiento físico →</text>`;
+if(id==='slide')s+=`${subject(200,83,'OBJETO')}<path d="M77 192H313M77 208H313" stroke="#a8b1ba" stroke-width="2"/><path class="route" d="M95 200H295"/><text x="200" y="243" text-anchor="middle">Raíl · desplazamiento lateral →</text>`;
+if(id==='tracking')s+=`${subject(70,92)}<path class="route" d="M70 190H280"/><path d="M70 92H280" stroke="#c19a53" stroke-dasharray="5 6" opacity=".6"/><text x="180" y="243" text-anchor="middle">Dos recorridos paralelos →</text>`;
+if(id==='follow')s+=`${subject(145,140)}<path class="route" d="M50 140H330"/><text x="198" y="219" text-anchor="middle">Misma dirección · sujeto delante →</text>`;
+if(id==='orbit')s+=`${subject(220,125)}<circle cx="220" cy="125" r="78" fill="none" stroke="#647483"/><path class="route" d="M142 125A78 78 0 0 0 298 125"/><line class="radius" x1="220" y1="125" x2="142" y2="125" stroke="#c19a53" stroke-dasharray="3 5" opacity=".6"/><text x="220" y="243" text-anchor="middle">Arco de 180° · distancia constante</text>`;
+return s;
+}
+function scene(m){return `<svg viewBox="0 0 400 270" role="img" aria-labelledby="${m.id}-svg-title ${m.id}-svg-desc"><title id="${m.id}-svg-title">${m.name}</title><desc id="${m.id}-svg-desc">${m.key}</desc>${environment(m.id)}<g class="camera"><g class="heading"><path d="M0 0L145-56L145 56Z" fill="#f0f0f0" fill-opacity=".07" stroke="#f0f0f0" stroke-opacity=".28"/><path d="M0 0H100" stroke="#f0f0f0" stroke-dasharray="3 4" opacity=".65"/><rect x="-16" y="-10" width="25" height="20" rx="4" fill="#f0f0f0" stroke="#ffffff"/><path d="M9-6L20-12V12L9 6Z" fill="#f0f0f0"/><circle cx="-9" cy="-16" r="5" fill="#f0f0f0"/><circle cx="2" cy="-16" r="5" fill="#f0f0f0"/></g><text class="camera-label" y="43" text-anchor="middle">CÁMARA</text></g></svg>`}
+function pose(s,x,y,a){s.camera.setAttribute('transform',`translate(${x} ${y})`);s.heading.setAttribute('transform',`rotate(${a})`)}
+function angle(x,y,tx,ty){return Math.atan2(ty-y,tx-x)*180/Math.PI}
+function render(s){const t=s.progress,id=s.m.id;
+if(id==='pan')pose(s,75,140,-38+76*t);
+if(id==='tilt')pose(s,65,190,angle(65,190,288,202-147*t));
+if(id==='dolly')pose(s,55+147*t,140,0);
+if(id==='slide')pose(s,95+200*t,200,-90);
+if(id==='tracking'){const x=70+210*t;pose(s,x,190,-90);s.subject.setAttribute('transform',`translate(${x} 92)`)}
+if(id==='follow'){const x=50+180*t;pose(s,x,140,0);s.subject.setAttribute('transform',`translate(${x+95} 140)`)}
+if(id==='orbit'){const a=Math.PI*(1-t),x=220+78*Math.cos(a),y=125+78*Math.sin(a);pose(s,x,y,angle(x,y,220,125));const r=s.card.querySelector('.radius');r.setAttribute('x2',x);r.setAttribute('y2',y)}
+if(id==='crane'){const a=Math.PI+t*Math.PI/2,x=170+110*Math.cos(a),y=215+110*Math.sin(a);pose(s,x,y,angle(x,y,270,192));const arm=s.card.querySelector('.arm');arm.setAttribute('x2',x);arm.setAttribute('y2',y)}
+renderCameraView(s);
+s.range.value=t*100;s.output.textContent=Math.round(t*100)+'%';s.range.setAttribute('aria-valuetext',Math.round(t*100)+' por ciento');}
+function updateButton(s){s.button.textContent=s.playing?'❚❚ Pausar':s.progress>=1?'↻ Repetir':s.progress>0?'▶ Continuar':'▶ Reproducir';s.button.setAttribute('aria-label',s.button.textContent+': '+s.m.name)}
+function pause(s){if(s.playing){cancelAnimationFrame(s.raf);s.playing=false;s.last=null;s.status.textContent='En pausa'}if(active===s)active=null;updateButton(s)}
+function toggle(s){if(s.playing){pause(s);return}if(active)pause(active);if(s.progress>=1)s.progress=0;s.playing=true;s.last=null;active=s;s.status.textContent='En reproducción';updateButton(s);document.getElementById('announcement').textContent=s.m.key;
+function tick(now){if(!s.playing)return;if(s.last!==null)s.progress=Math.min(1,s.progress+(now-s.last)/duration);s.last=now;render(s);if(s.progress>=1){pause(s);s.status.textContent='Demostración completada'}else s.raf=requestAnimationFrame(tick)}s.raf=requestAnimationFrame(tick)}
+async function copyText(text){try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);return true}}catch(e){}const a=document.createElement('textarea');a.value=text;a.style.position='fixed';a.style.left='-9999px';document.body.appendChild(a);const previous=document.activeElement;a.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}a.remove();if(previous)previous.focus();return ok}
+
+// Proyección en perspectiva: cada elemento ocupa una posición 3D real.
+// Ambas vistas utilizan el mismo progreso; no hay animaciones independientes.
+function viewPose(id,t){
+ let x=0,z=0,a=0,y=24,pitch=-.055,subject=[285,0,140],facing=-1;
+ if(id==='pan'){x=75;z=140;a=(-38+76*t)*Math.PI/180}
+ if(id==='dolly'){x=55+147*t;z=140;subject=[292,0,140]}
+ if(id==='slide'){x=95+200*t;z=200;a=-Math.PI/2;subject=[200,0,83]}
+ if(id==='tracking'){x=70+210*t;z=190;a=-Math.PI/2;subject=[x,0,92];facing=1}
+ if(id==='follow'){x=50+180*t;z=140;subject=[x+95,0,140];facing=1}
+ if(id==='orbit'){const theta=Math.PI*(1-t);x=220+78*Math.cos(theta);z=125+78*Math.sin(theta);a=Math.atan2(125-z,220-x);pitch=-Math.atan2(8,78);subject=[220,0,125]}
+ if(id==='tilt'){x=0;z=65;y=28;a=Math.PI/2;const targetHeight=218-(202-147*t);pitch=Math.atan2(targetHeight-y,288-65);subject=null}
+ if(id==='crane'){const theta=Math.PI+t*Math.PI/2;const diagramX=170+110*Math.cos(theta),diagramY=215+110*Math.sin(theta);x=0;z=diagramX;y=218-diagramY;a=Math.PI/2;pitch=Math.atan2(26-y,270-z);subject=[0,0,270]}
+ return {x,y,z,a,pitch,subject,facing};
+}
+function renderCameraView(s){
+ const canvas=s.card.querySelector('canvas'),ctx=canvas.getContext('2d');
+ const v=viewPose(s.m.id,s.progress),W=canvas.width,H=canvas.height,F=W*145/112;
+ const forward=[Math.cos(v.a)*Math.cos(v.pitch),Math.sin(v.pitch),Math.sin(v.a)*Math.cos(v.pitch)];
+ const right=[-Math.sin(v.a),0,Math.cos(v.a)];
+ const up=[-Math.cos(v.a)*Math.sin(v.pitch),Math.cos(v.pitch),-Math.sin(v.a)*Math.sin(v.pitch)];
+ const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+ function cameraPoint(p){const d=[p[0]-v.x,p[1]-v.y,p[2]-v.z];return [dot(d,right),dot(d,up),dot(d,forward)]}
+ const faces=[];
+ function polygon(points,color,stroke='#647483'){
+  let input=points.map(cameraPoint),clipped=[];
+  // Coupe les faces au plan proche : aucun retournement derrière la caméra.
+  for(let i=0;i<input.length;i++){
+   const A=input[i],B=input[(i+1)%input.length],insideA=A[2]>=2,insideB=B[2]>=2;
+   if(insideA)clipped.push(A);
+   if(insideA!==insideB){const k=(2-A[2])/(B[2]-A[2]);clipped.push([A[0]+k*(B[0]-A[0]),A[1]+k*(B[1]-A[1]),2])}
+  }
+  if(clipped.length<3)return;
+  faces.push({points:clipped.map(p=>[W/2+F*p[0]/p[2],H/2-F*p[1]/p[2]]),depth:clipped.reduce((n,p)=>n+p[2],0)/clipped.length,color,stroke});
+ }
+ function box(x,y,z,w,h,d,colors){
+  const p=[[x-w/2,y,z-d/2],[x+w/2,y,z-d/2],[x+w/2,y,z+d/2],[x-w/2,y,z+d/2],
+   [x-w/2,y+h,z-d/2],[x+w/2,y+h,z-d/2],[x+w/2,y+h,z+d/2],[x-w/2,y+h,z+d/2]];
+  const indices=[[0,1,5,4],[1,2,6,5],[2,3,7,6],[3,0,4,7],[4,5,6,7]];
+  indices.forEach((f,i)=>polygon(f.map(n=>p[n]),colors[i%colors.length]));
+ }
+ function tree3D(x,z){box(x,0,z,4,20,4,['#9aa6b0','#788592']);box(x,17,z,22,23,22,['#34495d','#243546','#34495d','#647483','#788592'])}
+ function person(p,facing){
+  const [x,y,z]=p;
+  function pbox(bx,by,bz,w,h,d,colors){box(x+(bx-x)*.8,y+(by-y)*.8,z+(bz-z)*.8,w*.8,h*.8,d*.8,colors)}
+  // Cuerpo, cabeza y nariz: geometría asimétrica visible desde distintos lados.
+  pbox(x,y+8,z,12,20,19,['#c19a53','#dec28f','#c19a53','#c19a53','#dec28f']);
+  pbox(x,y+28,z,14,12,14,['#dec28f','#c19a53','#dec28f','#dec28f','#f0f0f0']);
+  pbox(x+facing*8,y+31,z,4,4,4,['#c19a53']);
+  for(const side of [-1,1]){
+   pbox(x,y,z+side*5,7,8,5,['#c19a53','#dec28f']);
+   pbox(x+facing*7.1,y+35,z+side*3,0.35,1.8,1.8,['#1d2b39']);
+  }
+  // Una franja trasera permite distinguir la espalda de la cara frontal.
+  pbox(x-facing*6.1,y+11,z,0.35,13,3,['#34495d']);
+ }
+ ctx.fillStyle='#2c3e50';ctx.fillRect(0,0,W,H);
+ // Cuadrícula fija: las baldosas cercanas y lejanas muestran el paralaje.
+ for(let x=-160;x<600;x+=40)for(let z=-160;z<600;z+=40){
+  polygon([[x,-.2,z],[x+40,-.2,z],[x+40,-.2,z+40],[x,-.2,z+40]],((x+z)/40)%2===0?'#243546':'#34495d','#647483');
+ }
+ // El suelo se pinta antes que los objetos para evitar falsas oclusiones.
+ faces.sort((a,b)=>b.depth-a.depth);
+ for(const face of faces){ctx.beginPath();face.points.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));ctx.closePath();ctx.fillStyle=face.color;ctx.fill();ctx.strokeStyle=face.stroke;ctx.lineWidth=.6;ctx.stroke()}
+ faces.length=0;
+ if(s.m.id==='tilt'){
+  box(0,0,288,46,149,40,['#788592','#647483','#9aa6b0']);
+  box(0,149,288,31,33,30,['#9aa6b0','#647483','#bcc5ce']);
+  box(-42,0,330,34,123,40,['#647483','#788592']);
+  for(let h=44;h<145;h+=33)box(0,h,267.7,12,15,.5,['#1d2b39']);
+  box(0,0,267.5,15,31,1,['#1d2b39']);
+ }else if(s.m.id==='crane'){
+  box(-61,0,330,30,122,34,['#647483','#788592','#9aa6b0']);
+  box(54,0,357,35,153,32,['#788592','#9aa6b0','#647483']);
+  box(-38,0,240,15,13,14,['#9aa6b0','#647483']);
+  box(40,0,302,20,17,20,['#647483','#788592']);
+  person(v.subject,-1);
+ }else{
+  tree3D(45,58);tree3D(345,62);tree3D(340,219);
+  box(188,0,39,53,55,25,['#647483','#9aa6b0','#788592']);
+  if(s.m.id==='pan'){tree3D(245,65);tree3D(245,215)}
+  // Cerca, detrás y a los lados del sujeto: referencias a distintas profundidades.
+  if(s.m.id==='dolly'){
+   box(186,0,91,17,22,17,['#9aa6b0','#647483']);
+   box(365,0,178,25,46,25,['#647483','#788592']);
+  }
+  if(s.m.id==='slide'){
+   box(128,0,128,13,24,13,['#9aa6b0','#647483']);
+   box(260,0,45,26,45,20,['#647483','#788592']);
+  }
+  if(s.m.id==='orbit'){
+   box(150,0,60,20,37,20,['#9aa6b0','#647483']);
+   box(300,0,170,18,24,18,['#647483','#788592']);
+  }
+  person(v.subject,v.facing);
+ }
+ faces.sort((a,b)=>b.depth-a.depth);
+ for(const face of faces){ctx.beginPath();face.points.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));ctx.closePath();ctx.fillStyle=face.color;ctx.fill();ctx.strokeStyle=face.stroke;ctx.lineWidth=.6;ctx.stroke()}
+ // Detalles planos de la fachada, proyectados sobre la superficie frontal.
+ // Se pintan después para evitar que el orden medio de caras tape las ventanas.
+ if(s.m.id==='tilt'){
+  faces.length=0;
+  polygon([[-7.5,0,267.8],[7.5,0,267.8],[7.5,31,267.8],[-7.5,31,267.8]],'#1d2b39');
+  for(let h=44;h<145;h+=33)polygon([[-6,h,267.8],[6,h,267.8],[6,h+15,267.8],[-6,h+15,267.8]],'#1d2b39');
+  for(const face of faces){ctx.beginPath();face.points.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));ctx.closePath();ctx.fillStyle=face.color;ctx.fill()}
+ }
+ // Marcas de encuadre, sin cambiar la escala del lienzo ni la distancia focal.
+ ctx.strokeStyle='#f0f0f0';ctx.lineWidth=1;ctx.globalAlpha=.5;
+ for(const [x,y,sx,sy]of [[16,16,1,1],[W-16,16,-1,1],[16,H-16,1,-1],[W-16,H-16,-1,-1]]){ctx.beginPath();ctx.moveTo(x+sx*18,y);ctx.lineTo(x,y);ctx.lineTo(x,y+sy*18);ctx.stroke()}
+ ctx.globalAlpha=1;
+ const notes={pan:'La escena recorre el encuadre al girar la cámara. El punto de vista permanece fijo.',tilt:'La mirada asciende de la puerta a la torre. La altura de la cámara permanece fija.',dolly:'El sujeto crece y las referencias cercanas se separan más deprisa que las lejanas: cambia la perspectiva.',slide:'Las referencias cercanas cruzan el encuadre más deprisa que el fondo: paralaje lateral.',tracking:'El sujeto se mantiene en el encuadre mientras el entorno se desplaza detrás.',follow:'Vemos la espalda del sujeto. La cámara lo acompaña y el entorno pasa a su alrededor.',orbit:'La cara, el perfil y la espalda cambian al rodear al sujeto; el fondo también cambia.',crane:'Al elevarse la cámara vemos más suelo y las superficies superiores. El horizonte cambia con la inclinación.'};
+ let note=notes[s.m.id];
+ if(s.m.id==='orbit')note+=(s.progress<.25?' Vista predominantemente frontal.':s.progress>.75?' Vista predominantemente trasera.':' Vista de perfil o tres cuartos.');
+ s.card.querySelector('.view-note').textContent=note;
+}
+
+for(const [id,title,intro]of groups){const section=document.createElement('section');section.id=id;section.setAttribute('aria-labelledby',id+'-title');section.innerHTML=`<h2 id="${id}-title">${title}</h2><p class="intro">${intro}</p><div class="grid"></div>`;
+for(const m of movements.filter(m=>m.group===id)){const card=document.createElement('article');card.className='card';card.innerHTML=`<div class="head"><div class="eyebrow">Plano ${String(movements.indexOf(m)+1).padStart(2,'0')}</div><h3>${m.name}</h3><p class="english" lang="en">${m.english}</p><span class="badge">${m.view}</span><span class="badge">${m.type}</span></div><div class="stage"><h4 class="view-title">Recorrido de la cámara · ${m.view.toLowerCase()}</h4>${scene(m)}</div><div class="camera-result"><h4 class="view-title">Lo que ve la cámara</h4><canvas width="640" height="360" role="img" aria-label="Simulación en perspectiva de ${m.name}">Simulación en perspectiva: ${m.key}</canvas><p class="view-note"></p></div><div class="controls"><div class="row"><button type="button" class="play">▶ Reproducir</button><span class="status">Preparado</span></div><div class="scrub"><label for="${m.id}-range">Recorrido</label><input id="${m.id}-range" type="range" min="0" max="100" step="0.1" value="0" aria-label="Recorrido de ${m.name}"><output for="${m.id}-range">0%</output></div></div><div class="body"><p><strong>Qué hace:</strong> ${m.explanation}</p><p><strong>Cuándo utilizarlo:</strong> ${m.use}</p><p class="observe"><strong>Observa:</strong> ${m.key}</p><div class="prompt"><span class="prompt-label">PROMPT EN INGLÉS</span><code lang="en">${m.prompt}</code><button type="button" class="copy" aria-label="Copiar prompt de ${m.name}">Copiar prompt</button></div></div>`;
+section.querySelector('.grid').appendChild(card);const s={m,card,progress:0,playing:false,raf:0,last:null,camera:card.querySelector('.camera'),heading:card.querySelector('.heading'),subject:card.querySelector('.subject'),button:card.querySelector('.play'),range:card.querySelector('input'),output:card.querySelector('output'),status:card.querySelector('.status')};
+s.button.addEventListener('click',()=>toggle(s));s.range.addEventListener('input',()=>{pause(s);s.progress=Number(s.range.value)/100;render(s);updateButton(s);s.status.textContent='Control manual'});card.querySelector('.copy').addEventListener('click',async e=>{const button=e.currentTarget,ok=await copyText(m.prompt);button.textContent=ok?'✓ Copiado':'Selecciona el prompt';if(!ok){const r=document.createRange();r.selectNodeContents(card.querySelector('code'));const sel=window.getSelection();sel.removeAllRanges();sel.addRange(r)}document.getElementById('announcement').textContent=ok?'Prompt copiado.':'Selecciona y copia el texto del prompt.';setTimeout(()=>button.textContent='Copiar prompt',2200)});render(s);updateButton(s)}library.appendChild(section)}
+library.insertAdjacentHTML('beforeend',`<section id="zoom" aria-labelledby="zoom-title"><div class="comparison"><div class="eyebrow">Una diferencia fundamental</div><h2 id="zoom-title">Acercar la cámara no es hacer zoom</h2><p>En un <strong>dolly in</strong>, la cámara avanza físicamente. Cambia la perspectiva: los objetos cercanos y lejanos modifican su relación visual. En un <strong>zoom óptico</strong>, la cámara permanece en el mismo lugar y cambia la distancia focal. El encuadre se cierra o se abre sin cambiar el punto de vista.</p><div class="table-wrap"><table><caption class="sr-only">Comparación de giro, desplazamiento y zoom</caption><thead><tr><th>Acción</th><th>Qué cambia</th><th>Cómo pedirla</th></tr></thead><tbody><tr><td>Pan / Tilt</td><td>La orientación: la cámara gira desde un punto fijo.</td><td lang="en">Camera rotates from a fixed position.</td></tr><tr><td>Dolly / Tracking / Orbit / Crane</td><td>La posición de la cámara en el espacio.</td><td lang="en">Physical camera movement, no zoom.</td></tr><tr><td>Zoom</td><td>La distancia focal y el encuadre. La cámara no se desplaza.</td><td lang="en">Static camera, slow optical zoom in.</td></tr></tbody></table></div><p>El <strong>zoom digital</strong> recorta y amplía la imagen; tampoco desplaza la cámara y puede reducir el detalle disponible. Los generadores de vídeo pueden interpretar estas instrucciones de forma aproximada: revisa siempre el resultado.</p></div></section>`);
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&active)pause(active)});
+</script>
+</body></html>
